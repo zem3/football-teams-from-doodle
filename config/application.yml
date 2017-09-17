@@ -1,0 +1,21 @@
+minium:
+  config:
+    doodlePollId: 
+    playerRatings: # it is recommended to use ratings equal or less to the number of players for a match
+      Zé: 10
+      Messi: 9
+      Marcos C: 1
+      Luis O: 1
+      Tiago G: 1
+      Raphael: 1
+      Ricardo M: 1
+      Peixoto: 1
+      André: 1
+      Mário: 1
+      João F: 1
+      Pedro P: 1
+      Paulo R: 1
+      Henrique M: 1
+      João M: 1
+      Miguel C: 1
+      Figueiras: 1
