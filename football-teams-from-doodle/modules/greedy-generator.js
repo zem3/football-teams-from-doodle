@@ -1,6 +1,12 @@
 module.exports = {
-  generateTeams: function(players) {
-    return players.sort(function(player1, player2) {
+  generateTeams: function(players, ratings) {
+    return players.map(function(playerName) {
+                    return {
+                      name: playerName,
+                      rating: ratings[playerName]
+                    };
+                  })
+                  .sort(function(player1, player2) {
                     return player2.rating - player1.rating;
                   })
                   .reduce(function(teams, player) {

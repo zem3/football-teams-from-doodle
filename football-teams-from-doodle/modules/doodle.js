@@ -1,14 +1,9 @@
-var timeUnits = require("minium/timeunits");
-
-module.exports = function(doodlePollId) {
-  var doodlePollUrl = 'https://beta.doodle.com/poll/' + doodlePollId;
+module.exports = function(doodlePollUrl) {
 
   function loadDoodle() {
     if (!browser.getCurrentUrl().startsWith(doodlePollUrl)) {
       browser.configure().window().maximize();
       browser.get(doodlePollUrl);
-      if ($("#d-participationBetaWelcomeView").checkForExistence()) $(".d-continueButton").click();
-      $(":root").waitTime(3, timeUnits.SECONDS);
     }
   }
 
@@ -40,47 +35,47 @@ var table = (function() {
   elems.checkedPreferences = elems.preferences.has(".d-yesPreference");
   elems.participants = elems.root.find(".d-participant");
 
-  function dateElemAfter(dateElem) {
-    return elems.dates.rightOf(dateElem).first();
+  function dateElemAfter($date) {
+    return elems.dates.rightOf($date).first();
   }
 
   function dateElemsOfMonth(month) {
     return elems.dates.has(elems.months.withText(month));
   }
 
-  function participantElemsFor(dateElem) {
-    var checkedPreferenceElems = elems.checkedPreferences.below(dateElem);
-    return elems.participants.leftOf(checkedPreferenceElems);
+  function participantElemsFor($date) {
+    var $checkedPreferences = elems.checkedPreferences.below($date);
+    return elems.participants.leftOf($checkedPreferences);
   }
 
   function dateToDateElem(date) {
     return dateElemsOfMonth(date.month).has(elems.days.withText(date.day));
   }
 
-  function dateElemToDate(dateElem) {
+  function dateElemToDate($date) {
     return {
-      day: parseInt(dateElem.find(elems.days).text()),
-      month: dateElem.find(elems.months).text()
+      day: parseInt($date.find(elems.days).text()),
+      month: $date.find(elems.months).text()
     };
   }
 
   return {
     closestDateTo: function(date) {
-      var firstDateOfTheMonthElem = dateElemsOfMonth(date.month).first(),
-          closestDate = dateElemToDate(firstDateOfTheMonthElem);
+      var $firstDateOfTheMonth = dateElemsOfMonth(date.month).first(),
+          closestDate = dateElemToDate($firstDateOfTheMonth);
 
-      for (var nextDateElem = dateElemAfter(firstDateOfTheMonthElem);
+      for (var $nextDate = dateElemAfter($firstDateOfTheMonth);
            closestDate.day < date.day && closestDate.month == date.month;
-           closestDate = dateElemToDate(nextDateElem), nextDateElem = dateElemAfter(nextDateElem));
-      
+           closestDate = dateElemToDate($nextDate), $nextDate = dateElemAfter($nextDate));
+
       return closestDate;
     },
     participantsFor: function(date) {
       var participants = [];
 
-      for (var i = 0, participantElems = participantElemsFor(dateToDateElem(date));
-           i < participantElems.size();
-           participants.push(participantElems.eq(i++).text().trim()));
+      for (var i = 0, $participants = participantElemsFor(dateToDateElem(date));
+           i < $participants.size();
+           participants.push($participants.eq(i++).text().trim()));
 
       return participants;
     }
@@ -93,14 +88,14 @@ var calendar = (function() {
   elems.nextWeekButton = elems.root.find(".d-nextWeek");
   elems.days = elems.root.find(".fc-day-header");
   elems.today = elems.days.filter(".fc-today");
-  elems.daysOfTheMonth = elems.days.find("span:first");
+  elems.daysOfMonth = elems.days.find("span:first");
 
   return {
     today: function() {
       var today = {};
 
       while (!elems.today.checkForExistence("immediate")) elems.nextWeekButton.click();
-      today.day = elems.today.find(elems.daysOfTheMonth).text();
+      today.day = elems.today.find(elems.daysOfMonth).text();
 
       var possibleMonths = elems.week.text().match('[a-zA-Z]{3}', 'g');
       today.month = possibleMonths[possibleMonths.length == 2 && today.day < 7 ? 1 : 0];
