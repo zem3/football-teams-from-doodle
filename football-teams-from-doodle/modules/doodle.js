@@ -31,8 +31,8 @@ var table = (function() {
   elems.dates = elems.root.find(".d-optionDate");
   elems.months = elems.dates.find(".d-month");
   elems.days = elems.dates.find(".d-date");
-  elems.preferences = elems.root.find(".d-preference");
-  elems.checkedPreferences = elems.preferences.has(".d-yesPreference");
+  elems.preferences = elems.root.find(".d-preferences");
+  elems.checkedPreferences = elems.preferences.find(".d-yesPreference");
   elems.participants = elems.root.find(".d-participant");
 
   function dateElemAfter($date) {
